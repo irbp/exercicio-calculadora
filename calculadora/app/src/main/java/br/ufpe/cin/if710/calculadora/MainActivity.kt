@@ -1,10 +1,12 @@
 package br.ufpe.cin.if710.calculadora
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : Activity(), View.OnClickListener {
@@ -23,8 +25,8 @@ class MainActivity : Activity(), View.OnClickListener {
 
         digitIds = digitButtons.map { it.id }
         opIds = opButtons.map { it.id }
-        opButtons.map { it.setOnClickListener(this) }
-        digitButtons.map { it.setOnClickListener(this) }
+        opButtons.forEach { it.setOnClickListener(this) }
+        digitButtons.forEach { it.setOnClickListener(this) }
         btn_Clear.setOnClickListener(this)
         btn_Equal.setOnClickListener(this)
     }
@@ -48,6 +50,10 @@ class MainActivity : Activity(), View.OnClickListener {
 
     private fun String.toEditable(): Editable {
         return Editable.Factory.getInstance().newEditable(this)
+    }
+
+    private fun Any.toast(context: Context, duration: Int = Toast.LENGTH_SHORT): Toast {
+        return Toast.makeText(context, this.toString(), duration)
     }
 
     //Como usar a função:
@@ -76,7 +82,10 @@ class MainActivity : Activity(), View.OnClickListener {
             fun parse(): Double {
                 nextChar()
                 val x = parseExpression()
-                if (pos < str.length) throw RuntimeException("Caractere inesperado: " + ch)
+                if (pos < str.length) {
+//                    throw RuntimeException("Caractere inesperado: " + ch)
+                    "Caractere inesperado: $ch".toast(applicationContext)
+                }
                 return x
             }
 
