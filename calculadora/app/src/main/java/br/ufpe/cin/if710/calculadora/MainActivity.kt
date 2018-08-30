@@ -39,7 +39,10 @@ class MainActivity : Activity(), View.OnClickListener {
                 val expr = text_calc.text.toString()
                 text_calc.text = expr.dropLast(1).toEditable()
             }
-            else -> {}
+            else -> {
+                val result = eval(text_calc.text.toString())
+                text_info.text = result.toString()
+            }
         }
     }
 
