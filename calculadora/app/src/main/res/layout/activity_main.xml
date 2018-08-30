@@ -24,7 +24,7 @@
         android:layout_below="@id/text_info"
         android:enabled="false"
         android:gravity="bottom"
-        android:inputType="numberDecimal"
+        android:inputType="text"
         android:lines="2"
         android:maxLines="2"
         android:textSize="40sp" />
