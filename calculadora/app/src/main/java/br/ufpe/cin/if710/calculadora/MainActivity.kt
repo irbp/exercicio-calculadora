@@ -43,7 +43,7 @@ class MainActivity : Activity(), View.OnClickListener {
             }
             else -> {
                 val result = eval(text_calc.text.toString())
-                text_info.text = result.toString()
+                text_info.text = result?.toString()
             }
         }
     }
@@ -52,8 +52,8 @@ class MainActivity : Activity(), View.OnClickListener {
         return Editable.Factory.getInstance().newEditable(this)
     }
 
-    private fun Any.toast(context: Context, duration: Int = Toast.LENGTH_SHORT): Toast {
-        return Toast.makeText(context, this.toString(), duration)
+    private fun Any.toast(context: Context, duration: Int = Toast.LENGTH_LONG) {
+        Toast.makeText(context, this.toString(), duration).show()
     }
 
     //Como usar a função:
@@ -61,7 +61,7 @@ class MainActivity : Activity(), View.OnClickListener {
     // eval("2+3*4") = 14.0
     // eval("(2+3)*4") = 20.0
     //Fonte: https://stackoverflow.com/a/26227947
-    fun eval(str: String): Double {
+    fun eval(str: String): Double? {
         return object : Any() {
             var pos = -1
             var ch: Char = ' '
@@ -79,12 +79,12 @@ class MainActivity : Activity(), View.OnClickListener {
                 return false
             }
 
-            fun parse(): Double {
+            fun parse(): Double? {
                 nextChar()
-                val x = parseExpression()
+                var x: Double? = parseExpression()
                 if (pos < str.length) {
-//                    throw RuntimeException("Caractere inesperado: " + ch)
-                    "Caractere inesperado: $ch".toast(applicationContext)
+                    x = null
+                    "Caractere inesperado: $ch".toast(this@MainActivity)
                 }
                 return x
             }
@@ -141,10 +141,13 @@ class MainActivity : Activity(), View.OnClickListener {
                         x = Math.cos(Math.toRadians(x))
                     else if (func == "tan")
                         x = Math.tan(Math.toRadians(x))
-                    else
-                        throw RuntimeException("Função desconhecida: " + func)
+                    else {
+                        x = 0.0
+                        "Função desconhecida: $func".toast(this@MainActivity)
+                    }
                 } else {
-                    throw RuntimeException("Caractere inesperado: " + ch.toChar())
+                    x = 0.0
+                    "Caractere inesperado: $ch".toast(this@MainActivity)
                 }
                 if (eat('^')) x = Math.pow(x, parseFactor()) // potência
                 return x
