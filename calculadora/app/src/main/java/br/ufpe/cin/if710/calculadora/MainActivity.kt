@@ -2,12 +2,49 @@ package br.ufpe.cin.if710.calculadora
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.Editable
+import android.view.View
+import android.widget.Button
+import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : Activity() {
+class MainActivity : Activity(), View.OnClickListener {
+
+    private lateinit var digitIds: List<Int>
+    private lateinit var opIds: List<Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val digitButtons = listOf(btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7,
+                btn_8, btn_9)
+        val opButtons = listOf(btn_Dot, btn_Add, btn_Subtract, btn_Multiply, btn_Divide, btn_Power,
+                btn_LParen, btn_RParen)
+
+        digitIds = digitButtons.map { it.id }
+        opIds = opButtons.map { it.id }
+        opButtons.map { it.setOnClickListener(this) }
+        digitButtons.map { it.setOnClickListener(this) }
+        btn_Clear.setOnClickListener(this)
+        btn_Equal.setOnClickListener(this)
+    }
+
+    // listener para o clique de cada botao
+    override fun onClick(v: View?) {
+        val button: Button = v as Button
+
+        when (button.id) {
+            in digitIds, in opIds -> text_calc.append(button.text)
+            R.id.btn_Clear -> {
+                val expr = text_calc.text.toString()
+                text_calc.text = expr.dropLast(1).toEditable()
+            }
+            else -> {}
+        }
+    }
+
+    private fun String.toEditable(): Editable {
+        return Editable.Factory.getInstance().newEditable(this)
     }
 
     //Como usar a função:
@@ -102,4 +139,5 @@ class MainActivity : Activity() {
             }
         }.parse()
     }
+
 }
