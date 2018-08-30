@@ -29,6 +29,17 @@ class MainActivity : Activity(), View.OnClickListener {
         digitButtons.forEach { it.setOnClickListener(this) }
         btn_Clear.setOnClickListener(this)
         btn_Equal.setOnClickListener(this)
+
+        if (savedInstanceState != null) {
+            text_info.text = savedInstanceState.getString("textInfo").toEditable()
+            text_calc.text = savedInstanceState.getString("textCalc").toEditable()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putString("textInfo", text_info.text.toString())
+        outState?.putString("textCalc", text_calc.text.toString())
     }
 
     // listener para o clique de cada botao
