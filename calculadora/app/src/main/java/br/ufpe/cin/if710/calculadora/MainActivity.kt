@@ -53,8 +53,12 @@ class MainActivity : Activity(), View.OnClickListener {
                 if (length >= 1) text_calc.text.delete(length - 1, length)
             }
             else -> {
-                val result = eval(text_calc.text.toString())
-                text_info.text = result?.toString()
+                try {
+                    val result = eval(text_calc.text.toString())
+                    text_info.text = result.toString()
+                } catch (e: RuntimeException) {
+                    e.message?.toast(this)
+                }
             }
         }
     }
@@ -93,10 +97,7 @@ class MainActivity : Activity(), View.OnClickListener {
             fun parse(): Double? {
                 nextChar()
                 var x: Double? = parseExpression()
-                if (pos < str.length) {
-                    x = null
-                    "Caractere inesperado: $ch".toast(this@MainActivity)
-                }
+                if (pos < str.length) throw RuntimeException("Caractere inesperado: " + ch)
                 return x
             }
 
@@ -153,12 +154,10 @@ class MainActivity : Activity(), View.OnClickListener {
                     else if (func == "tan")
                         x = Math.tan(Math.toRadians(x))
                     else {
-                        x = 0.0
-                        "Função desconhecida: $func".toast(this@MainActivity)
+                        throw RuntimeException("Função desconhecida: " + func)
                     }
                 } else {
-                    x = 0.0
-                    "Caractere inesperado: $ch".toast(this@MainActivity)
+                    throw RuntimeException("Caractere inesperado: " + ch.toChar())
                 }
                 if (eat('^')) x = Math.pow(x, parseFactor()) // potência
                 return x
