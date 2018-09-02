@@ -18,35 +18,45 @@ class MainActivity : Activity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // lista com os buttons presentes na activity da calculadora
         val digitButtons = listOf(btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7,
                 btn_8, btn_9)
         val opButtons = listOf(btn_Dot, btn_Add, btn_Subtract, btn_Multiply, btn_Divide, btn_Power,
                 btn_LParen, btn_RParen)
 
+        // criando uma lista de id's a partir de cada button
         digitIds = digitButtons.map { it.id }
         opIds = opButtons.map { it.id }
+
+        // setando o click listener de cada botão utilizando lambda expressions
         opButtons.forEach { it.setOnClickListener(this) }
         digitButtons.forEach { it.setOnClickListener(this) }
+
+        // setando o click listener para o botão clear (limpa apenas o último dígito)
         btn_Clear.setOnClickListener(this)
+        // setando o long click listener para o botão clear (limpa o campo por completo)
         btn_Clear.setOnLongClickListener {
             text_calc.text.clear()
             true
         }
+        // setando o click listener para o botão equal
         btn_Equal.setOnClickListener(this)
 
+        // recuperando os valores das views caso a activity seja recriada
         if (savedInstanceState != null) {
             text_info.text = savedInstanceState.getString("textInfo").toEditable()
             text_calc.text = savedInstanceState.getString("textCalc").toEditable()
         }
     }
 
+    // salvando os valores das views caso haja alguma troca de configuração
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putString("textInfo", text_info.text.toString())
         outState?.putString("textCalc", text_calc.text.toString())
     }
 
-    // listener para o clique de cada botao
+    // implementando o listener responsável de tomar uma ação dependendo da função de cada botão
     override fun onClick(v: View?) {
         val button: Button = v as Button
 
@@ -57,6 +67,7 @@ class MainActivity : Activity(), View.OnClickListener {
                 if (length >= 1) text_calc.text.delete(length - 1, length)
             }
             else -> {
+                // ao invés de crashar a aplicação um toast é exibido com a mensagem vinda do throw
                 try {
                     val result = eval(text_calc.text.toString())
                     text_info.text = result.toString()
@@ -71,6 +82,7 @@ class MainActivity : Activity(), View.OnClickListener {
         return Editable.Factory.getInstance().newEditable(this)
     }
 
+    // Utilizando extensions functions para exibir um toast
     private fun Any.toast(context: Context, duration: Int = Toast.LENGTH_LONG) {
         Toast.makeText(context, this.toString(), duration).show()
     }
