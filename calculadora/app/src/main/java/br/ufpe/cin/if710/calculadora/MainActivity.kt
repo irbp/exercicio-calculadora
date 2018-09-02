@@ -28,6 +28,10 @@ class MainActivity : Activity(), View.OnClickListener {
         opButtons.forEach { it.setOnClickListener(this) }
         digitButtons.forEach { it.setOnClickListener(this) }
         btn_Clear.setOnClickListener(this)
+        btn_Clear.setOnLongClickListener {
+            text_calc.text.clear()
+            true
+        }
         btn_Equal.setOnClickListener(this)
 
         if (savedInstanceState != null) {
