@@ -49,8 +49,8 @@ class MainActivity : Activity(), View.OnClickListener {
         when (button.id) {
             in digitIds, in opIds -> text_calc.append(button.text)
             R.id.btn_Clear -> {
-                val expr = text_calc.text.toString()
-                text_calc.text = expr.dropLast(1).toEditable()
+                val length = text_calc.text.length
+                if (length >= 1) text_calc.text.delete(length - 1, length)
             }
             else -> {
                 val result = eval(text_calc.text.toString())
